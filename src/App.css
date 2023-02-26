@@ -1,18 +1,37 @@
 .App {
   text-align: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.d-flex {
+  display: block;
 }
-
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+table, th {
+  border-bottom: 1px solid black;
+}
+th, td {
+  padding: 10px;
+}
+form {
+  height: 100px;
+  margin: 20px;
+}
+.img {
+  width: 500px;
+}
+.input-form {
+  padding: 10px;
+  width: 400px;
+  margin: 5px;
+}
+.btn {
+  margin: 5px;
+  padding: 10px;
+  width: 100px;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
