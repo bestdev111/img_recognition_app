@@ -1,23 +1,29 @@
 import { useEffect, useState } from 'react';
 import Tesseract from 'tesseract.js';
+import { ProgressBar } from 'react-loader-spinner';
+import New from './New'
 import './App.css';
 function App() {
   const [data, setData] = useState('');
   const [url, setUrl] = useState('');
+  const [loading, setLoading] = useState(true);
   const [img, setImg] = useState(null);
   const onChange = (e) => {
     setUrl(e.target.value)
   }
   const submit = () => {
-    if(url.length > 0 & url.slice(0, 8) === 'https://') {
-      console.log(url);
+    if(url.length > 0) {
+      setLoading(false);
       setImg(url);
     } else {
       alert('Please input correct image url');
     }
   }
   useEffect(()=>{
-    Tesseract.recognize(
+    func();
+  }, [img, url])
+  const func = async () => {
+    await Tesseract.recognize(
       url, 'eng', { logger: m => {} }
     ).then(({ data: { text } }) => {
       console.log('text=>',text);
@@ -29,13 +35,15 @@ function App() {
         sm: '4',
       })
       setData(arr);
+      setLoading(true);
     })
-  }, [img, url])
+  }
   
   console.log('+++',data);
   return (
     <div className="App">
       <div className='App-header'>
+        <img src='https://tesseract.projectnaptha.com/img/eng_bw.png' className="img" alt="img" />
         <div>
           {img ?
             <img src={img} className="img" alt="img" />
@@ -51,30 +59,46 @@ function App() {
           </div>
         </form>
         <div>
-          <table>
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Meter</th>
-                <th>Watt</th>
-                <th>S/M</th>
-              </tr>
-            </thead>
-            <tbody>
+          {loading ? 
+            <>
               {data ? 
-                data.map((item, index) => 
-                  <tr>
-                    <td>{item.time}</td>
-                    <td>{item.meter}</td>
-                    <td>{item.watt}</td>
-                    <td>{item.sm}</td>
-                  </tr>
-                )
-               : <tr><td>No Data</td></tr>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Meter</th>
+                      <th>Watt</th>
+                      <th>S/M</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.map((item, index) => 
+                      <tr key={index}>
+                        <td>{item.time}</td>
+                        <td>{item.meter}</td>
+                        <td>{item.watt}</td>
+                        <td>{item.sm}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              : null
               }
-            </tbody>
-          </table>
+            </>
+           : <ProgressBar
+              height="80"
+              width="80"
+              ariaLabel="progress-bar-loading"
+              wrapperStyle={{}}
+              wrapperClass="progress-bar-wrapper"
+              borderColor = '#F4442E'
+              barColor = '#51E5FF'
+            />
+          }
         </div>
+      </div>
+      <div>
+        <New />
       </div>
     </div>
   );
